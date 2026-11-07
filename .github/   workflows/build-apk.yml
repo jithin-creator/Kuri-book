@@ -1,5 +1,5 @@
 
-name: Build JJ KURI BOOK APK
+name: Build JJ KURI BOOK Debug APK
 
 on:
   workflow_dispatch:
@@ -26,16 +26,19 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install dependencies
+      - name: Install packages
         run: npm install
 
-      - name: Add Android
+      - name: Prepare app
+        run: npm run build
+
+      - name: Create Android project
         run: npx cap add android
 
-      - name: Sync app
+      - name: Sync Android
         run: npx cap sync android
 
-      - name: Build APK
+      - name: Build Debug APK
         run: |
           cd android
           chmod +x gradlew
@@ -44,5 +47,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: JJ-KURI-BOOK-APK
+          name: JJ-KURI-BOOK-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
