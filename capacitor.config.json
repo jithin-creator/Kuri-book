@@ -1,7 +1,6 @@
-
 {
-  "appId": "com.jj.kuribook",
-  "appName": "JJ KURI BOOK",
+  "appId": "com.jjmeterservice.app",
+  "appName": "JJ METER SERVICE",
   "webDir": "www",
   "bundledWebRuntime": false
 }
