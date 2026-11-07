@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JJ KURI BOOK</title>
+
+<style>
+:root{
+ --bg:#081321;
+ --panel:#14243a;
+ --gold:#f3c969;
+ --gold2:#ffe5a0;
+ --text:#ffffff;
+ --muted:#aebbd0;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:linear-gradient(140deg,#07111f,#142b48);
+ color:var(--text);font-family:Arial,sans-serif;
+ padding:14px;
+}
+header{
+ text-align:center;padding:20px 8px;
+ background:linear-gradient(120deg,#172d48,#293c59);
+ border:1px solid #b88b39;border-radius:18px;
+}
+.logo{font-size:40px}
+h1{color:var(--gold);margin:8px 0}
+.card{
+ background:var(--panel);border:1px solid #526078;
+ border-radius:15px;padding:15px;margin-top:15px;
+}
+h2{color:var(--gold);font-size:19px}
+.stats{
+ display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.stat{
+ background:#203650;padding:13px;border-radius:12px;
+ border:1px solid #8e713f;
+}
+.stat small{color:var(--muted)}
+.stat strong{
+ display:block;color:var(--gold2);font-size:20px;
+ margin-top:8px;overflow-wrap:anywhere;
+}
+input,button{
+ font-size:15px;border-radius:9px;padding:11px;
+}
+input{
+ width:100%;background:#09182a;color:white;
+ border:1px solid #62728b;margin:5px 0;
+}
+button{
+ border:0;background:linear-gradient(120deg,#d29c35,#ffe5a0);
+ color:#182236;font-weight:bold;cursor:pointer;
+ margin:4px 2px;
+}
+button.danger{background:#b63d45;color:white}
+button.blue{background:#3a78b5;color:white}
+label{color:var(--gold2);font-size:13px}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;min-width:800px;width:100%}
+th,td{border:1px solid #526078;padding:7px}
+th{background:#263d58;color:var(--gold)}
+td input{min-width:105px;margin:0}
+#cubeArea{text-align:center;padding:18px}
+.cube{
+ width:110px;height:110px;margin:25px auto;
+ position:relative;transform-style:preserve-3d;
+ animation:spin 5s linear infinite;
+}
+.face{
+ position:absolute;width:110px;height:110px;
+ border:3px solid var(--gold);
+ background:linear-gradient(135deg,#263e5e,#0c1727);
+ display:flex;align-items:center;justify-content:center;
+ color:var(--gold);font-size:38px;font-weight:bold;
+}
+.front{transform:translateZ(55px)}
+.back{transform:rotateY(180deg) translateZ(55px)}
+.right{transform:rotateY(90deg) translateZ(55px)}
+.left{transform:rotateY(-90deg) translateZ(55px)}
+.top{transform:rotateX(90deg) translateZ(55px)}
+.bottom{transform:rotateX(-90deg) translateZ(55px)}
+@keyframes spin{
+ from{transform:rotateX(0) rotateY(0)}
+ to{transform:rotateX(360deg) rotateY(360deg)}
+}
+#winner{
+ color:var(--gold2);font-size:23px;font-weight:bold;
+ margin:15px;overflow-wrap:anywhere;
+}
+.note{color:var(--muted);font-size:12px}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">🎲</div>
+ <h1>JJ KURI BOOK</h1>
+ <div style="color:#ffe5a0">SMART KURI MANAGEMENT</div>
+ <p id="clock"></p>
+</header>
+
+<section class="card">
+ <h2>📊 Kuri Account Summary</h2>
+ <div class="stats">
+  <div class="stat">
+   <small>Total Credit</small>
+   <strong id="totalCredit">₹0.00</strong>
+  </div>
+  <div class="stat">
+   <small>Total Debit</small>
+   <strong id="totalDebit">₹0.00</strong>
+  </div>
+  <div class="stat">
+   <small>Balance</small>
+   <strong id="balance">₹0.00</strong>
+  </div>
+  <div class="stat">
+   <small>Monthly Interest</small>
+   <strong id="interestAmount">₹0.00</strong>
+  </div>
+ </div>
+</section>
+
+<section class="card">
+ <h2>💰 Monthly Interest Calculator</h2>
+ <label>Monthly Interest Rate (%)</label>
+ <input id="rate" type="number" min="0" step="0.01"
+ placeholder="Enter interest percentage">
+ <p class="note">
+ Interest = Positive balance × monthly rate ÷ 100.
+ </p>
+</section>
+
+<section class="card">
+ <h2>📒 Kuri Register - 50 Entries</h2>
+ <p class="note">Enter name, date, credit, debit and Undiga name.</p>
+ <div class="tablewrap">
+ <table>
+ <thead>
+ <tr>
+ <th>No.</th>
+ <th>Name</th>
+ <th>Date</th>
+ <th>Credit ₹</th>
+ <th>Debit ₹</th>
+ <th>Undiga Name</th>
+ </tr>
+ </thead>
+ <tbody id="rows"></tbody>
+ </table>
+ </div>
+ <button onclick="saveData()">💾 Save Records</button>
+ <button class="blue" onclick="calculate()">🔄 Calculate</button>
+</section>
+
+<section class="card" id="cubeArea">
+ <h2>🎲 MAGIC CUBE - LUCKY DRAW</h2>
+ <div class="cube" id="cube">
+  <div class="face front">★</div>
+  <div class="face back">7</div>
+  <div class="face right">3</div>
+  <div class="face left">5</div>
+  <div class="face top">1</div>
+  <div class="face bottom">9</div>
+ </div>
+ <button onclick="drawWinner()">✨ START LUCKY DRAW</button>
+ <div id="winner">Winner Name</div>
+ <p class="note">Draw selects one non-empty register name at random.</p>
+</section>
+
+<section class="card">
+ <h2>📁 Backup & Restore</h2>
+ <button onclick="backup()">⬇ Download Backup</button>
+ <button class="blue" onclick="document.getElementById('restoreFile').click()">📂 Restore Backup</button>
+ <input id="restoreFile" type="file" accept=".json"
+ style="display:none" onchange="restore(event)">
+ <button class="danger" onclick="clearData()">🗑 Clear All Records</button>
+ <p class="note">Records are stored in this browser on your phone.</p>
+</section>
+
+<script>
+const STORAGE="JJ_KURI_BOOK_DATA";
+let records=[];
+
+function emptyRecord(){
+ return {name:"",date:"",credit:"",debit:"",undiga:""};
+}
+
+function loadData(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(STORAGE)||"null");
+  records=Array.isArray(saved)&&saved.length===50
+   ? saved.map(x=>({...emptyRecord(),...x}))
+   : Array.from({length:50},emptyRecord);
+ }catch(e){
+  records=Array.from({length:50},emptyRecord);
+ }
+ renderRows();
+ calculate();
+}
+
+function renderRows(){
+ const tbody=document.getElementById("rows");
+ tbody.innerHTML="";
+ records.forEach((r,i)=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`
+   <td>${i+1}</td>
+   <td><input aria-label="Name ${i+1}" data-i="${i}" data-k="name" placeholder="Name"></td>
+   <td><input aria-label="Date ${i+1}" data-i="${i}" data-k="date" type="date"></td>
+   <td><input aria-label="Credit ${i+1}" data-i="${i}" data-k="credit" type="number" min="0" step="0.01" placeholder="0"></td>
+   <td><input aria-label="Debit ${i+1}" data-i="${i}" data-k="debit" type="number" min="0" step="0.01" placeholder="0"></td>
+   <td><input aria-label="Undiga name ${i+1}" data-i="${i}" data-k="undiga" placeholder="Undiga name"></td>
+  `;
+  tbody.appendChild(tr);
+  tr.querySelectorAll("input").forEach(input=>{
+   input.value=r[input.dataset.k]??"";
+   input.addEventListener("input",()=>{
+    records[i][input.dataset.k]=input.value;
+    calculate();
+    saveData(false);
+   });
+  });
+ });
+}
+
+function saveData(show=true){
+ localStorage.setItem(STORAGE,JSON.stringify(records));
+ if(show) alert("Kuri records saved successfully!");
+}
+
+function calculate(){
+ let credit=0,debit=0;
+ records.forEach(r=>{
+  credit+=Math.max(0,Number(r.credit)||0);
+  debit+=Math.max(0,Number(r.debit)||0);
+ });
+ const balance=credit-debit;
+ const rate=Math.max(0,Number(document.getElementById("rate").value)||0);
+ const interest=Math.max(0,balance)*rate/100;
+
+ document.getElementById("totalCredit").textContent=money(credit);
+ document.getElementById("totalDebit").textContent=money(debit);
+ document.getElementById("balance").textContent=money(balance);
+ document.getElementById("interestAmount").textContent=money(interest);
+ saveData(false);
+}
+
+function money(n){
+ return "₹"+n.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+document.getElementById("rate").addEventListener("input",calculate);
+
+function drawWinner(){
+ const names=records.filter(r=>r.name.trim()!=="");
+ if(!names.length){
+  alert("Please enter at least one name first!");
+  return;
+ }
+ const cube=document.getElementById("cube");
+ const result=document.getElementById("winner");
+ result.textContent="🎲 Drawing...";
+ cube.style.animation="none";
+ void cube.offsetWidth;
+ cube.style.animation="spin 0.35s linear infinite";
+
+ setTimeout(()=>{
+  const selected=names[Math.floor(Math.random()*names.length)];
+  result.textContent="🏆 "+selected.name;
+  if(selected.undiga.trim()){
+   result.textContent+=" | Undiga: "+selected.undiga;
+  }
+  cube.style.animation="spin 5s linear infinite";
+ },2200);
+}
+
+function backup(){
+ saveData(false);
+ const data={
+  app:"JJ KURI BOOK",
+  version:1,
+  rate:document.getElementById("rate").value,
+  records:records
+ };
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="JJ_KURI_BOOK_BACKUP.json";
+ a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function restore(event){
+ const file=event.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const data=JSON.parse(reader.result);
+   if(!Array.isArray(data.records)||data.records.length!==50)
+    throw new Error("Invalid backup");
+   records=data.records.map(x=>({...emptyRecord(),...x}));
+   document.getElementById("rate").value=data.rate||"";
+   saveData(false);
+   renderRows();
+   calculate();
+   alert("Backup restored successfully!");
+  }catch(e){alert("Invalid backup file!");}
+  event.target.value="";
+ };
+ reader.readAsText(file);
+}
+
+function clearData(){
+ if(!confirm("Delete all 50 Kuri records?"))return;
+ records=Array.from({length:50},emptyRecord);
+ document.getElementById("rate").value="";
+ document.getElementById("winner").textContent="Winner Name";
+ saveData(false);
+ renderRows();
+ calculate();
+}
+
+function updateClock(){
+ document.getElementById("clock").textContent=new Date().toLocaleString();
+}
+setInterval(updateClock,1000);
+updateClock();
+loadData();
+</script>
+</body>
+</html>
