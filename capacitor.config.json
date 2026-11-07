@@ -1,0 +1,7 @@
+
+{
+  "appId": "com.jj.kuribook",
+  "appName": "JJ KURI BOOK",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}
